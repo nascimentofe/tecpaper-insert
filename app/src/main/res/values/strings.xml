@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">TecPaperInsert</string>
+    <string name="app_name">TecPaper - Insert</string>
+    <string name="todo">TODO</string>
 </resources>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="20dp"
+    android:orientation="vertical"
+    tools:context=".fragment.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bem vindo, "
+            android:textSize="30sp"
+            android:fontFamily="@font/charly_dreams"
+            android:textColor="@color/secundary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="profissional!"
+            android:textSize="30sp"
+            android:fontFamily="@font/charly_dreams"
+            android:textColor="@color/ic_launcher_background"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Papelaria técnologia 4.0"
+            android:fontFamily="@font/charly_dreams"
+            android:textSize="15sp"
+            android:textColor="@color/secundary" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Precisa cadastrar um produto?"
+            android:textSize="20sp"
+            android:fontFamily="@font/charly_dreams"
+            android:textColor="@color/secundary"
+            android:layout_marginTop="90dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clique abaixo"
+                android:textSize="20sp"
+                android:fontFamily="@font/charly_dreams"
+                android:textColor="@color/orange"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" para começar!"
+                android:textSize="20sp"
+                android:fontFamily="@font/charly_dreams"
+                android:textColor="@color/secundary"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnScan"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="@drawable/back_btn"
+            android:paddingStart="15dp"
+            android:paddingEnd="10dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="90dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_qr_code_24"
+                android:layout_marginTop="8dp"/>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:text="COMEÇAR"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
