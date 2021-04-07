@@ -42,6 +42,7 @@ public class HomeFragment extends Fragment {
         ProductFragment product = new ProductFragment();
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
+        ft.addToBackStack("Home");
         ft.replace(R.id.fragmentContainer, product, "Product");
         ft.commit();
     }

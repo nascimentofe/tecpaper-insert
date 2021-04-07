@@ -7,7 +7,7 @@
     tools:context=".activity.MainActivity">
 
     <com.scwang.wave.MultiWaveHeader
-        android:id="@+id/waveHeader"
+        android:id="@+id/waveHeaderMain"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         app:mwhStartColor="@color/ic_launcher_background"

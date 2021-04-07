@@ -13,7 +13,6 @@ import com.tectoy.tecpaperinsert.fragment.HomeFragment;
 /**
  * @company TECTOY
  * @department development and support
- *
  * @author fenascimento
  *
  */
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        wave = (MultiWaveHeader)findViewById(R.id.waveHeader);
+        wave = (MultiWaveHeader)findViewById(R.id.waveHeaderMain);
         wave.setVelocity(6f);
         wave.setProgress(.8f);
         wave.isRunning();
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         HomeFragment home = new HomeFragment();
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
+        ft.addToBackStack("Main");
         ft.replace(R.id.fragmentContainer, home, "Home");
         ft.commit();
     }
