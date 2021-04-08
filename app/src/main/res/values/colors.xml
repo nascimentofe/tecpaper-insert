@@ -10,4 +10,5 @@
     <color name="ic_launcher_background">#00BFA6</color>
     <color name="secundary">#3f3d56</color>
     <color name="orange">#FF6102</color>
+    <color name="red">#FF0000</color>
 </resources>

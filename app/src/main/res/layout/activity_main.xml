@@ -21,8 +21,6 @@
         android:layout_marginTop="130dp"
         android:background="#FFF">
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

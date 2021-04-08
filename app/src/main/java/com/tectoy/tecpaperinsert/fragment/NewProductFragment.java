@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,29 +22,28 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.EdgeEffectCompat;
-import androidx.core.widget.NestedScrollView;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.tectoy.tecpaperinsert.R;
-import com.tectoy.tecpaperinsert.activity.NewProductActivity;
-import com.tectoy.tecpaperinsert.utils.Constants;
+import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Objects;
 
+import cz.msebera.android.httpclient.Header;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import com.loopj.android.http.*;
+
+import org.json.JSONException;
+
 import static android.app.Activity.RESULT_OK;
-import static androidx.core.graphics.TypefaceCompatUtil.getTempFile;
 
 public class NewProductFragment extends Fragment {
 
@@ -115,6 +115,7 @@ public class NewProductFragment extends Fragment {
             initCamera();
         });
         btnEnviar.setOnClickListener(view -> {
+
             sendData();
         });
     }
@@ -127,20 +128,22 @@ public class NewProductFragment extends Fragment {
                 if(!editDesc.getText().toString().equals("")){
                     String desc = editDesc.getText().toString();
                     if(!editPrice.getText().toString().equals("")){
-                        String price = editPrice.getText().toString();
+                        String price = editPrice.getText().toString().replace(",", ".");
                         if (fileImage != null){
-                            Ion.with(getContext())
-                                    .load("")
-                                    .uploadProgressBar(progressBar)
-                                    .setMultipartParameter("id", id)
-                                    .setMultipartParameter("name", name)
-                                    .setMultipartParameter("desc", desc)
-                                    .setMultipartParameter("price", price)
-                                    .setMultipartFile("image", "image/*", fileImage)
-                                    .asJsonObject()
-                                    .setCallback((e, result) -> {
+                            try {
+                                TecpaperRestClient client = new TecpaperRestClient(getContext(), getActivity());
+                                RequestParams params = new RequestParams();
+                                params.put("id", Long.valueOf(id));
+                                params.put("name", name);
+                                params.put("description", desc);
+                                params.put("price", Double.valueOf(price));
+                                params.put("image", new FileInputStream(fileImage), fileImage.getName());
 
-                                    });
+                                client.postProduct(progressBar, params);
+
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }else{
                             // ERRO NA IMAGEM
                             Toast.makeText(getContext(), "Foto não encontrada", Toast.LENGTH_LONG).show();
