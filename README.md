@@ -20,7 +20,7 @@ System used in all centers of technological stationery 4.0, TecPaper.
 ## Demo
 
 - #### Welcome Screen
-![](http://tecpaper.tk/tecpaper/public/mov/insert/1.gif | width=300)
+<img src="http://tecpaper.tk/tecpaper/public/mov/insert/1.gif" width="150" alt="">
 
 ###
 - #### Home Screen
