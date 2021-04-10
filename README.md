@@ -20,23 +20,23 @@ System used in all centers of technological stationery 4.0, TecPaper.
 ## Demo
 
 - #### Welcome Screen
-<img src="http://tecpaper.tk/tecpaper/public/mov/insert/1.gif" width="150" alt="">
+<img src="http://tecpaper.tk/tecpaper/public/mov/insert/1.gif" width="250" alt="">
 
 ###
 - #### Home Screen
-![](http://tecpaper.tk/tecpaper/public/mov/insert/2.gif)
+<img src="http://tecpaper.tk/tecpaper/public/mov/insert/2.gif" width="250" alt="">
 
 ###
 - #### Scanner Screen
-![](http://tecpaper.tk/tecpaper/public/mov/insert/3.gif)
+<img src="http://tecpaper.tk/tecpaper/public/mov/insert/3.gif" width="250" alt="">
 
 ###
 - #### Product Register Screen
-![](http://tecpaper.tk/tecpaper/public/mov/insert/4.gif)
+<img src="http://tecpaper.tk/tecpaper/public/mov/insert/4.gif" width="250" alt="">
 
 ###
 - #### Choosing a image for the product
-![](http://tecpaper.tk/tecpaper/public/mov/insert/5.gif)
+<img src="http://tecpaper.tk/tecpaper/public/mov/insert/5.gif" width="250" alt="">
 
 ## Support
 Any questions or suggestions, send an email to: ***fenascimentodev@gmail.com***
