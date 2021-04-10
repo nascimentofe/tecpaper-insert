@@ -34,9 +34,5 @@ System used in all centers of technological stationery 4.0, TecPaper.
 - #### Product Register Screen
 <img src="http://tecpaper.tk/tecpaper/public/mov/insert/4.gif" width="300" alt="">
 
-###
-- #### Choosing a image for the product
-<img src="http://tecpaper.tk/tecpaper/public/mov/insert/5.gif" width="300" alt="">
-
 ## Support
 Any questions or suggestions, send an email to: ***fenascimentodev@gmail.com***
