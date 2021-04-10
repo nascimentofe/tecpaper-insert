@@ -16,7 +16,6 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.koushikdutta.ion.Ion;
 import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.activity.NewProductActivity;
 import com.tectoy.tecpaperinsert.api.TecpaperRestClient;

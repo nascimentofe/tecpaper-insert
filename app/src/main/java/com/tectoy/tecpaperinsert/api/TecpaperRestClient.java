@@ -1,11 +1,13 @@
 package com.tectoy.tecpaperinsert.api;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.loopj.android.http.*;
 import com.tectoy.tecpaperinsert.list.ProductListAdapter;
@@ -23,12 +25,8 @@ public class TecpaperRestClient {
 
     private static final String BASE_URL = "http://tecpaper.tk/tecpaper/public/api/products";
     private static AsyncHttpClient client = new AsyncHttpClient();
-    private Context mContext;
-    private Activity mActivity;
-
-    public TecpaperRestClient(){
-
-    }
+    private final Context mContext;
+    private final Activity mActivity;
 
     public TecpaperRestClient(Context context, Activity activity){
         mContext = context;
@@ -65,39 +63,25 @@ public class TecpaperRestClient {
         });
     }
 
-    public void postProduct(ProgressBar progressBar, RequestParams params){
+    public void postProduct(ProgressDialog dialog, RequestParams params){
 
         TecpaperRestClient.post("", params, new JsonHttpResponseHandler(){
 
             @Override
-            public void onStart() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progressBar.setVisibility(View.GONE);
+                dialog.dismiss();
+
+                try {
+                    Toast.makeText(mContext, response.getString("result"), Toast.LENGTH_LONG).show();
+
+                    if (response.getString("result").equals("REGISTRO INSERIDO")){
+                        mActivity.finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 Log.i("##TESTE", response.toString());
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                progressBar.setVisibility(View.GONE);
-                Log.i("##TESTE", throwable.getMessage() + " : " + responseString);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                progressBar.setVisibility(View.GONE);
             }
         });
 

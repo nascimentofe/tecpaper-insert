@@ -2,6 +2,7 @@ package com.tectoy.tecpaperinsert.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -26,7 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.koushikdutta.ion.Ion;
 import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -53,8 +53,6 @@ public class NewProductFragment extends Fragment {
     EditText editCode, editName, editDesc, editPrice;
     TextView btnEnviar;
     File fileImage;
-    ProgressBar progressBar;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +82,7 @@ public class NewProductFragment extends Fragment {
 
                 imgNewProduct.setImageURI(result.getUri());
                 fileImage = criarArquivo(result.getUri());
+                imgNewProduct.setBorderColor(ContextCompat.getColor(getContext(), R.color.ic_launcher_background));
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
@@ -115,7 +114,6 @@ public class NewProductFragment extends Fragment {
             initCamera();
         });
         btnEnviar.setOnClickListener(view -> {
-
             sendData();
         });
     }
@@ -133,20 +131,27 @@ public class NewProductFragment extends Fragment {
                             try {
                                 TecpaperRestClient client = new TecpaperRestClient(getContext(), getActivity());
                                 RequestParams params = new RequestParams();
-                                params.put("id", Long.valueOf(id));
+                                params.put("id", id);
                                 params.put("name", name);
                                 params.put("description", desc);
                                 params.put("price", Double.valueOf(price));
                                 params.put("image", new FileInputStream(fileImage), fileImage.getName());
 
-                                client.postProduct(progressBar, params);
+                                final ProgressDialog dialog = new ProgressDialog(getContext());
+                                dialog.setMessage("Cadastrando produto...");
+                                dialog.setIndeterminate(false);
+                                dialog.setCanceledOnTouchOutside(true);
+                                dialog.setCancelable(true);
+                                dialog.show();
+
+                                client.postProduct(dialog, params);
 
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
                             }
                         }else{
                             // ERRO NA IMAGEM
-                            Toast.makeText(getContext(), "Foto não encontrada", Toast.LENGTH_LONG).show();
+                            imgNewProduct.setBorderColor(ContextCompat.getColor(getContext(), R.color.red));
                         }
                     }else{
                         // ERRO NO EDIT PRICE
@@ -176,7 +181,6 @@ public class NewProductFragment extends Fragment {
         editDesc = (EditText) vNewProduct.findViewById(R.id.editNewProduct_desc);
         editPrice = (EditText) vNewProduct.findViewById(R.id.editNewProduct_price);
         btnEnviar = (TextView) vNewProduct.findViewById(R.id.btnEnviar);
-        progressBar = (ProgressBar) vNewProduct.findViewById(R.id.progressBarNewProduct);
     }
 
     private void initCamera(){
