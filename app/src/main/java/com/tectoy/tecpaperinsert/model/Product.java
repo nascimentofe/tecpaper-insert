@@ -5,8 +5,7 @@ import java.io.Serializable;
 /**
  * @company TECTOY
  * @department development and support
- *
- * @author fenascimento
+ * @author nascimentofe
  *
  */
 

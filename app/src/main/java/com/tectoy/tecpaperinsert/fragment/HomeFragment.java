@@ -17,8 +17,7 @@ import com.tectoy.tecpaperinsert.R;
 /**
  * @company TECTOY
  * @department development and support
- *
- * @author fenascimento
+ * @author nascimentofe
  *
  */
 

@@ -26,6 +26,13 @@ import com.tectoy.tecpaperinsert.fragment.ProductFragment;
 
 import java.io.Serializable;
 
+/**
+ * @company TECTOY
+ * @department development and support
+ * @author nascimentofe
+ *
+ */
+
 public class NewProductActivity extends AppCompatActivity {
 
     MultiWaveHeader wave;

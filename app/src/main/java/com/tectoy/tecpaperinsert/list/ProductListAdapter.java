@@ -10,12 +10,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.squareup.picasso.Picasso;
 import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.model.Product;
 
 import java.util.ArrayList;
+
+/**
+ * @company TECTOY
+ * @department development and support
+ * @author nascimentofe
+ *
+ */
 
 public class ProductListAdapter extends ArrayAdapter<Product> {
 
@@ -49,7 +57,8 @@ public class ProductListAdapter extends ArrayAdapter<Product> {
             Picasso.get().load("http://tecpaper.tk/" + product.getImage()).into(img);
         }
         nome.setText(product.getName());
-        valor.setText(product.getValue() + "");
+        valor.setTextColor(ContextCompat.getColor(getContext(), R.color.ic_launcher_background));
+        valor.setText("R$ " + product.getValue());
 
         return vList;
     }

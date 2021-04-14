@@ -45,6 +45,13 @@ import org.json.JSONException;
 
 import static android.app.Activity.RESULT_OK;
 
+/**
+ * @company TECTOY
+ * @department development and support
+ * @author nascimentofe
+ *
+ */
+
 public class NewProductFragment extends Fragment {
 
     CircleImageView imgNewProduct;

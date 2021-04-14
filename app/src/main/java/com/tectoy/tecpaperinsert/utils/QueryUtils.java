@@ -8,6 +8,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * @company TECTOY
+ * @department development and support
+ * @author nascimentofe
+ *
+ */
+
 public class QueryUtils {
 
     public static ArrayList<Product> extractProducts(JSONArray jsonArray){

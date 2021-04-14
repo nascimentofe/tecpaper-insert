@@ -13,7 +13,7 @@ import com.tectoy.tecpaperinsert.fragment.HomeFragment;
 /**
  * @company TECTOY
  * @department development and support
- * @author fenascimento
+ * @author nascimentofe
  *
  */
 

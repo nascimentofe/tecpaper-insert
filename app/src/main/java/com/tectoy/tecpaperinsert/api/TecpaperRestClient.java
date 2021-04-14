@@ -21,6 +21,13 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
+/**
+ * @company TECTOY
+ * @department development and support
+ * @author nascimentofe
+ *
+ */
+
 public class TecpaperRestClient {
 
     private static final String BASE_URL = "http://tecpaper.tk/tecpaper/public/api/products";
@@ -28,16 +35,20 @@ public class TecpaperRestClient {
     private final Context mContext;
     private final Activity mActivity;
 
+    // CONSTRUCTOR
+
     public TecpaperRestClient(Context context, Activity activity){
         mContext = context;
         mActivity = activity;
     }
 
-    public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+    // PRIVATE METHODS
+    private static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
-    public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    private static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
@@ -45,7 +56,9 @@ public class TecpaperRestClient {
         return BASE_URL + relativeUrl;
     }
 
-    public void getProductsToListView(ListView listProducts, ProgressBar progressBar) throws JSONException {
+
+    // PUBLIC METHODS
+    public void getProductsToListView(ListView listProducts, ProgressBar progressBar) {
         TecpaperRestClient.get("", null, new JsonHttpResponseHandler(){
             @Override
             public void onStart() {
@@ -84,6 +97,10 @@ public class TecpaperRestClient {
                 Log.i("##TESTE", response.toString());
             }
         });
+
+    }
+
+    public void deleteProduct(ListView listView){
 
     }
 
