@@ -43,6 +43,7 @@ public class ProductFragment extends Fragment {
     ListView listProducts;
     FloatingActionButton fab;
     ProgressBar progressBar;
+    TecpaperRestClient client;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,18 +98,12 @@ public class ProductFragment extends Fragment {
     }
 
     private void excluirItem(Product product) {
-
+        client.deleteProduct(listProducts, product.getId(), progressBar);
     }
 
     private void startListView() {
-        resetList();
-
-        TecpaperRestClient client = new TecpaperRestClient(getContext(), getActivity());
+        client = new TecpaperRestClient(getContext(), getActivity());
         client.getProductsToListView(listProducts, progressBar);
-    }
-
-    public void resetList(){
-        listProducts.setAdapter(null);
     }
 
 }
