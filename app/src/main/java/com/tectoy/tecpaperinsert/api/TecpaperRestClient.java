@@ -55,7 +55,7 @@ public class TecpaperRestClient {
     }
 
     private static void delete(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
-        client.delete(url, params, responseHandler);
+        client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
     private static String getAbsoluteUrl(String relativeUrl) {
@@ -108,16 +108,14 @@ public class TecpaperRestClient {
     }
 
     public void deleteProduct(ListView listView, long id, ProgressBar progressBar){
-        TecpaperRestClient.delete("?id=" + id + "&pass=" + Security.ADMPASS, null, new AsyncHttpResponseHandler() {
+        String url = "?id=" + id + "&pass=" + Security.ADMPASS;
+        TecpaperRestClient.delete(url, null, new JsonHttpResponseHandler(){
+
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 getProductsToListView(listView, progressBar);
 
-            }
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(mContext, "Falha: " + statusCode, Toast.LENGTH_LONG).show();
             }
         });
     }
