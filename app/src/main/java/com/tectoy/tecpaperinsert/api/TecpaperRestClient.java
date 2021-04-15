@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.loopj.android.http.*;
 import com.tectoy.tecpaperinsert.list.ProductListAdapter;
 import com.tectoy.tecpaperinsert.model.Product;
+import com.tectoy.tecpaperinsert.sec.Security;
 import com.tectoy.tecpaperinsert.utils.QueryUtils;
 
 import org.json.JSONException;
@@ -107,8 +108,7 @@ public class TecpaperRestClient {
     }
 
     public void deleteProduct(ListView listView, long id, ProgressBar progressBar){
-        RequestParams params = new RequestParams("id", id);
-        TecpaperRestClient.delete("", params, new AsyncHttpResponseHandler() {
+        TecpaperRestClient.delete("?id=" + id + "&pass=" + Security.ADMPASS, null, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
