@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
@@ -77,14 +79,25 @@ public class ProductFragment extends Fragment {
             Product product = (Product) parent.getAdapter().getItem(position);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Excluir o produto com o id " + product.getId() + "?")
+            AlertDialog alertDialog =  builder.setMessage("Tem certeza que deseja excluir esse produto?")
                     .setPositiveButton("Sim", (dialog, which) -> {
                         excluirItem(product);
+
+                        hideStatusBarAndNavigationBar();
                     })
                     .setNegativeButton("Não", (dialog, which) -> {
                         dialog.dismiss();
+
+                        hideStatusBarAndNavigationBar();
                     })
-                    .show();
+                    .create();
+            alertDialog.setOnShowListener(dialog -> {
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.orange));
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.orange));
+
+                hideStatusBarAndNavigationBar();
+            });
+            alertDialog.show();
 
             return false;
         });
@@ -104,6 +117,19 @@ public class ProductFragment extends Fragment {
     private void startListView() {
         client = new TecpaperRestClient(getContext(), getActivity());
         client.getProductsToListView(listProducts, progressBar);
+    }
+
+    private void hideStatusBarAndNavigationBar() {
+        View decorView = getActivity().getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION // hide nav bar
+//                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
 }

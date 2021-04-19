@@ -108,6 +108,10 @@ public class TecpaperRestClient {
     }
 
     public void deleteProduct(ListView listView, long id, ProgressBar progressBar){
+
+
+
+
         String url = "?id=" + id + "&pass=" + Security.ADMPASS;
         TecpaperRestClient.delete(url, null, new JsonHttpResponseHandler(){
 
@@ -118,5 +122,10 @@ public class TecpaperRestClient {
 
             }
         });
+
+
+
+
+
     }
 }

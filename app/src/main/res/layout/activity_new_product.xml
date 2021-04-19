@@ -57,7 +57,7 @@
             android:id="@+id/txt_aguardando_produto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AGUARDANDO PRODUTO . . ."
+            android:text="AGUARDANDO SCAN . . ."
             app:layout_constraintTop_toBottomOf="@id/progressBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
