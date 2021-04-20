@@ -12,24 +12,25 @@
         android:id="@+id/progressBarListProduct"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <ListView
-        android:id="@+id/listProduct"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerProduct"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="30dp"
-        android:divider="#FFF"
+        tools:listitem="@layout/item_product"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
 
-    </ListView>
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
