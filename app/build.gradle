@@ -42,6 +42,8 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.+'
     implementation 'com.loopj.android:android-async-http:1.4.9'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

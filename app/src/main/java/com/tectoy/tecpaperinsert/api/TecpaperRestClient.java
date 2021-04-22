@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -14,8 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.loopj.android.http.*;
-import com.tectoy.tecpaperinsert.list.ProductAdapter;
-import com.tectoy.tecpaperinsert.model.Product;
+import com.tectoy.tecpaperinsert.adapter.ProductAdapter;
 import com.tectoy.tecpaperinsert.sec.Security;
 import com.tectoy.tecpaperinsert.utils.QueryUtils;
 
@@ -81,7 +78,7 @@ public class TecpaperRestClient {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 ProductAdapter productAdapter = new ProductAdapter(mContext, QueryUtils.extractProducts(response));
                 recyclerProducts.setAdapter(productAdapter);
-                recyclerProducts.setLayoutManager(new LinearLayoutManager(mContext));
+
                 progressBar.setVisibility(View.GONE);
             }
         });

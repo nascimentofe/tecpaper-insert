@@ -2,6 +2,7 @@ package com.tectoy.tecpaperinsert.fragment;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +18,7 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -23,6 +26,8 @@ import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.activity.NewProductActivity;
 import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
 import com.tectoy.tecpaperinsert.model.Product;
+
+import java.util.List;
 
 /**
  * @company TECTOY
@@ -66,6 +71,9 @@ public class ProductFragment extends Fragment {
         progressBar = (ProgressBar) vProduct.findViewById(R.id.progressBarListProduct);
         recyclerProducts = (RecyclerView) vProduct.findViewById(R.id.recyclerProduct);
         recyclerProducts.setHasFixedSize(true);
+        recyclerProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
 
         fab = (FloatingActionButton) vProduct.findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
