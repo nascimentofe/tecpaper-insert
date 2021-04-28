@@ -40,9 +40,12 @@ public class HomeFragment extends Fragment {
     private void startProductFragment() {
         ProductFragment product = new ProductFragment();
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.addToBackStack("Home");
-        ft.replace(R.id.fragmentContainer, product, "Product");
-        ft.commit();
+        fm.beginTransaction()
+                .setCustomAnimations(
+                        R.anim.right_to_left, R.anim.exit_rigth_to_left,
+                        R.anim.left_to_right, R.anim.exit_left_to_rigth)
+                .addToBackStack("Home")
+                .replace(R.id.fragmentContainer, product, "Product")
+                .commit();
     }
 }

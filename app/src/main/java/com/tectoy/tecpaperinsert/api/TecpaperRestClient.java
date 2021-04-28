@@ -51,13 +51,16 @@ public class TecpaperRestClient {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
+
     private static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
+
     private static void delete(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
+
 
     private static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
@@ -65,7 +68,7 @@ public class TecpaperRestClient {
 
 
     // PUBLIC METHODS
-    public void getProductsToListView(RecyclerView recyclerProducts, ProgressBar progressBar) {
+    public void getProductsToRecyclerView(RecyclerView recyclerProducts, ProgressBar progressBar) {
 
         recyclerProducts.setAdapter(null);
 
@@ -76,13 +79,14 @@ public class TecpaperRestClient {
             }
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                ProductAdapter productAdapter = new ProductAdapter(mContext, QueryUtils.extractProducts(response));
+                ProductAdapter productAdapter = new ProductAdapter(mContext, mActivity, QueryUtils.extractProducts(response));
                 recyclerProducts.setAdapter(productAdapter);
 
                 progressBar.setVisibility(View.GONE);
             }
         });
     }
+
 
     public void postProduct(ProgressDialog dialog, RequestParams params){
 
@@ -108,7 +112,7 @@ public class TecpaperRestClient {
 
     }
 
-    public void deleteProduct(RecyclerView listView, long id, ProgressBar progressBar){
+    public void deleteProduct(RecyclerView recyclerProducts, long id, ProgressBar progressBar){
 
         String url = "?id=" + id + "&pass=" + Security.ADMPASS;
         TecpaperRestClient.delete(url, null, new JsonHttpResponseHandler(){
@@ -116,7 +120,7 @@ public class TecpaperRestClient {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                getProductsToListView(listView, progressBar);
+                getProductsToRecyclerView(recyclerProducts, progressBar);
 
             }
         });

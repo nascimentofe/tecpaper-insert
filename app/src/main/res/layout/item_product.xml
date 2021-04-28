@@ -17,17 +17,8 @@
         android:paddingTop="3dp"
         android:paddingBottom="3dp">
 
-<!--        <TextView-->
-<!--            android:id="@+id/txtEdit"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="#FFC107"-->
-<!--            android:gravity="center"-->
-<!--            android:text="@string/edit"-->
-<!--            android:textColor="#FFF"-->
-<!--            />-->
-
         <ImageButton
+            android:id="@+id/imgBtnItemProduct_edit"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_orange_edit"
@@ -37,6 +28,7 @@
             />
 
         <ImageButton
+            android:id="@+id/imgBtnItemProduct_delete"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_round_delete_24"
@@ -44,14 +36,6 @@
             android:contentDescription="@string/delete"
             android:background="#FFF"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/txtDelete"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="#F44336"-->
-<!--            android:gravity="center"-->
-<!--            android:text="@string/delete"-->
-<!--            android:textColor="#FFF"/>-->
 
     </LinearLayout>
 

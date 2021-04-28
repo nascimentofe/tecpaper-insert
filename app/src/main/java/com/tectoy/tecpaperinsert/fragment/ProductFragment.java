@@ -73,8 +73,6 @@ public class ProductFragment extends Fragment {
         recyclerProducts.setHasFixedSize(true);
         recyclerProducts.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
-
         fab = (FloatingActionButton) vProduct.findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent i = new Intent(getContext(), NewProductActivity.class);
@@ -89,7 +87,7 @@ public class ProductFragment extends Fragment {
 
     private void startRecyclerView() {
         client = new TecpaperRestClient(getContext(), getActivity());
-        client.getProductsToListView(recyclerProducts, progressBar);
+        client.getProductsToRecyclerView(recyclerProducts, progressBar);
     }
 
     private void hideStatusBarAndNavigationBar() {
