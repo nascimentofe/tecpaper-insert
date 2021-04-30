@@ -8,8 +8,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -27,13 +30,25 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
+import com.tectoy.tecpaperinsert.model.Product;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Objects;
 
 import cz.msebera.android.httpclient.Header;
@@ -60,6 +75,8 @@ public class NewProductFragment extends Fragment {
     EditText editCode, editName, editDesc, editPrice;
     TextView btnEnviar;
     File fileImage;
+    Product product;
+    Bitmap bitmap;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +88,14 @@ public class NewProductFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         vNewProduct = (ViewGroup) inflater.inflate(R.layout.fragment_new_product, container, false);
-        strProduct = Objects.requireNonNull(getArguments()).getString("data");
+
+        if(getArguments().getSerializable("editProduct") != null){
+            product = (Product) getArguments().getSerializable("editProduct");
+        }else{
+            if (getArguments().getString("newProduct") != null){
+                strProduct = getArguments().getString("newProduct");
+            }
+        }
 
         initViews();
 
@@ -145,7 +169,7 @@ public class NewProductFragment extends Fragment {
                                 params.put("image", new FileInputStream(fileImage), fileImage.getName());
 
                                 final ProgressDialog dialog = new ProgressDialog(getContext());
-                                dialog.setMessage("Cadastrando produto...");
+                                dialog.setMessage((product != null) ? "Atualizando produto..." : "Cadastrando produto...");
                                 dialog.setIndeterminate(false);
                                 dialog.setCanceledOnTouchOutside(true);
                                 dialog.setCancelable(true);
@@ -180,14 +204,44 @@ public class NewProductFragment extends Fragment {
 
     private void initViews() {
         editCode = (EditText) vNewProduct.findViewById(R.id.editNewProduct_code);
-        editCode.setText(strProduct);
         editCode.setEnabled(false);
-
         imgNewProduct = (CircleImageView) vNewProduct.findViewById(R.id.img_new_product);
         editName = (EditText) vNewProduct.findViewById(R.id.editNewProduct_name);
         editDesc = (EditText) vNewProduct.findViewById(R.id.editNewProduct_desc);
         editPrice = (EditText) vNewProduct.findViewById(R.id.editNewProduct_price);
         btnEnviar = (TextView) vNewProduct.findViewById(R.id.btnEnviar);
+
+        if (product != null){
+            editCode.setText("" + product.getId());
+            prepareImage(imgNewProduct);
+            editName.setText(product.getName());
+            editDesc.setText(product.getDesc());
+            editPrice.setText("" + product.getValue());
+            btnEnviar.setText("ATUALIZAR");
+        }else{
+            if (strProduct != null){
+                editCode.setText(strProduct);
+            }
+        }
+    }
+
+    private void prepareImage(CircleImageView imgNewProduct) {
+        String link = "http://tecpaper.tk/" + product.getImage();
+
+        Picasso.get()
+                .load(link)
+                .into(imgNewProduct, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        fileImage = getImage();
+                        String name = fileImage.getName();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.i("##ERRO", e.getMessage());
+                    }
+                });
     }
 
     private void initCamera(){
@@ -202,4 +256,31 @@ public class NewProductFragment extends Fragment {
         CropImage.activity()
                 .start(getContext(), this);
     }
+
+    private File getImage(){
+
+       bitmap = ((BitmapDrawable) imgNewProduct.getDrawable()).getBitmap();
+
+       String time = new SimpleDateFormat("yyyMMdd_HHmmss", Locale.getDefault())
+               .format(System.currentTimeMillis());
+       File path = Environment.getExternalStorageDirectory();
+       File dir = new File(path + "/DCIM");
+       dir.mkdirs();
+       String imgName = time + ".PNG";
+       File file = new File(dir, imgName);
+       OutputStream out;
+
+       try{
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+       }catch (Exception e){
+
+       }
+
+       return file;
+
+    }
+
 }

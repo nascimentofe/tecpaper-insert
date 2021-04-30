@@ -118,7 +118,7 @@ public class NewProductActivity extends AppCompatActivity {
         NewProductFragment newProductFragment = new NewProductFragment();
         Bundle data = new Bundle();
         newProductFragment.setArguments(data);
-        data.putString("data", strProduct);
+        data.putString("newProduct", strProduct);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.newProduct_container, newProductFragment, "NewProduct");

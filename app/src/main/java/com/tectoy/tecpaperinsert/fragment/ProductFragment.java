@@ -1,37 +1,33 @@
 package com.tectoy.tecpaperinsert.fragment;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.activity.NewProductActivity;
 import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
-import com.tectoy.tecpaperinsert.list.ProductListAdapter;
-import com.tectoy.tecpaperinsert.utils.QueryUtils;
 import com.tectoy.tecpaperinsert.model.Product;
 
-import org.json.JSONException;
-
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @company TECTOY
@@ -42,7 +38,7 @@ import java.util.ArrayList;
 
 public class ProductFragment extends Fragment {
 
-    ListView listProducts;
+    RecyclerView recyclerProducts;
     FloatingActionButton fab;
     ProgressBar progressBar;
     TecpaperRestClient client;
@@ -60,47 +56,22 @@ public class ProductFragment extends Fragment {
 
         startViews(vProduct);
 
-        startListView();
+        startRecyclerView();
 
         return vProduct;
     }
 
     @Override
     public void onResume() {
-        startListView();
+        startRecyclerView();
         super.onResume();
     }
 
     private void startViews(ViewGroup vProduct) {
         progressBar = (ProgressBar) vProduct.findViewById(R.id.progressBarListProduct);
-        listProducts = (ListView) vProduct.findViewById(R.id.listProduct);
-        listProducts.setOnItemLongClickListener((parent, view, position, id) -> {
-
-            Product product = (Product) parent.getAdapter().getItem(position);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            AlertDialog alertDialog =  builder.setMessage("Tem certeza que deseja excluir esse produto?")
-                    .setPositiveButton("Sim", (dialog, which) -> {
-                        excluirItem(product);
-
-                        hideStatusBarAndNavigationBar();
-                    })
-                    .setNegativeButton("Não", (dialog, which) -> {
-                        dialog.dismiss();
-
-                        hideStatusBarAndNavigationBar();
-                    })
-                    .create();
-            alertDialog.setOnShowListener(dialog -> {
-                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.orange));
-                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getContext(), R.color.orange));
-
-                hideStatusBarAndNavigationBar();
-            });
-            alertDialog.show();
-
-            return false;
-        });
+        recyclerProducts = (RecyclerView) vProduct.findViewById(R.id.recyclerProduct);
+        recyclerProducts.setHasFixedSize(true);
+        recyclerProducts.setLayoutManager(new LinearLayoutManager(getContext()));
 
         fab = (FloatingActionButton) vProduct.findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -111,12 +82,12 @@ public class ProductFragment extends Fragment {
     }
 
     private void excluirItem(Product product) {
-        client.deleteProduct(listProducts, product.getId(), progressBar);
+        client.deleteProduct(recyclerProducts, product.getId(), progressBar);
     }
 
-    private void startListView() {
+    private void startRecyclerView() {
         client = new TecpaperRestClient(getContext(), getActivity());
-        client.getProductsToListView(listProducts, progressBar);
+        client.getProductsToRecyclerView(recyclerProducts, progressBar);
     }
 
     private void hideStatusBarAndNavigationBar() {

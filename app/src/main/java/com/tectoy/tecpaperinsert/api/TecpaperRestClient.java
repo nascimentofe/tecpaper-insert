@@ -5,20 +5,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.loopj.android.http.*;
-import com.tectoy.tecpaperinsert.list.ProductListAdapter;
-import com.tectoy.tecpaperinsert.model.Product;
+import com.tectoy.tecpaperinsert.adapter.ProductAdapter;
 import com.tectoy.tecpaperinsert.sec.Security;
 import com.tectoy.tecpaperinsert.utils.QueryUtils;
 
 import org.json.JSONException;
 import org.json.*;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
@@ -36,6 +36,7 @@ public class TecpaperRestClient {
     private static final AsyncHttpClient client = new AsyncHttpClient();
     private final Context mContext;
     private final Activity mActivity;
+    private ArrayList arrProducts;
 
 
     // CONSTRUCTOR
@@ -50,13 +51,16 @@ public class TecpaperRestClient {
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
 
+
     private static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.post(getAbsoluteUrl(url), params, responseHandler);
     }
 
+
     private static void delete(String url, RequestParams params, AsyncHttpResponseHandler responseHandler){
         client.get(getAbsoluteUrl(url), params, responseHandler);
     }
+
 
     private static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
@@ -64,9 +68,9 @@ public class TecpaperRestClient {
 
 
     // PUBLIC METHODS
-    public void getProductsToListView(ListView listProducts, ProgressBar progressBar) {
+    public void getProductsToRecyclerView(RecyclerView recyclerProducts, ProgressBar progressBar) {
 
-        listProducts.setAdapter(null);
+        recyclerProducts.setAdapter(null);
 
         TecpaperRestClient.get("", null, new JsonHttpResponseHandler(){
             @Override
@@ -75,13 +79,14 @@ public class TecpaperRestClient {
             }
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                ArrayList<Product> list = QueryUtils.extractProducts(response);
-                ProductListAdapter adapter = new ProductListAdapter(mActivity, list);
-                listProducts.setAdapter(adapter);
+                ProductAdapter productAdapter = new ProductAdapter(mContext, mActivity, QueryUtils.extractProducts(response));
+                recyclerProducts.setAdapter(productAdapter);
+
                 progressBar.setVisibility(View.GONE);
             }
         });
     }
+
 
     public void postProduct(ProgressDialog dialog, RequestParams params){
 
@@ -107,10 +112,7 @@ public class TecpaperRestClient {
 
     }
 
-    public void deleteProduct(ListView listView, long id, ProgressBar progressBar){
-
-
-
+    public void deleteProduct(RecyclerView recyclerProducts, long id, ProgressBar progressBar){
 
         String url = "?id=" + id + "&pass=" + Security.ADMPASS;
         TecpaperRestClient.delete(url, null, new JsonHttpResponseHandler(){
@@ -118,14 +120,9 @@ public class TecpaperRestClient {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                getProductsToListView(listView, progressBar);
+                getProductsToRecyclerView(recyclerProducts, progressBar);
 
             }
         });
-
-
-
-
-
     }
 }

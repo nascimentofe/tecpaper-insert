@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        wave = (MultiWaveHeader)findViewById(R.id.waveHeaderMain);
+        wave = (MultiWaveHeader) findViewById(R.id.waveHeaderMain);
         wave.setVelocity(6f);
         wave.setProgress(.8f);
         wave.isRunning();
@@ -60,9 +60,13 @@ public class MainActivity extends AppCompatActivity {
     public void startHomeFragment(){
         HomeFragment home = new HomeFragment();
         FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.addToBackStack("Main");
-        ft.replace(R.id.fragmentContainer, home, "Home");
-        ft.commit();
+        fm.beginTransaction()
+                .setCustomAnimations(
+                    R.anim.right_to_left, R.anim.exit_rigth_to_left,
+                    R.anim.left_to_right, R.anim.exit_left_to_rigth)
+                .addToBackStack("Main")
+                .replace(R.id.fragmentContainer, home, "Home")
+                .commit();
+
     }
 }
