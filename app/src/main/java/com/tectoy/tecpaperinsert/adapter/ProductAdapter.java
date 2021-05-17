@@ -1,6 +1,7 @@
 package com.tectoy.tecpaperinsert.adapter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.squareup.picasso.Picasso;
 import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.activity.NewProductActivity;
+import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
 import com.tectoy.tecpaperinsert.fragment.NewProductFragment;
 import com.tectoy.tecpaperinsert.model.Product;
 
@@ -44,6 +46,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     Activity mActivity;
     ArrayList<Product> listProducts;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+    TecpaperRestClient mClient;
 
     public ProductAdapter(Context context, Activity activity, ArrayList<Product> products){
         mActivity = activity;
@@ -56,7 +59,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.item_product, parent, false);
-        return new MyViewHolder(view, mContext, mActivity);
+        mClient = new TecpaperRestClient(mContext, mActivity);
+        return new MyViewHolder(view, mContext, mActivity, mClient);
     }
 
     @Override
@@ -82,8 +86,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         SwipeRevealLayout swipeRevealLayout;
         Context mContext;
         Activity mActivity;
+        TecpaperRestClient mClient;
 
-        public MyViewHolder(@NonNull View itemView, Context context, Activity activity) {
+        public MyViewHolder(@NonNull View itemView, Context context, Activity activity, TecpaperRestClient client) {
             super(itemView);
 
             mContext = context;
@@ -94,13 +99,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             txtDesc = itemView.findViewById(R.id.txt_desc_item);
             img = itemView.findViewById(R.id.img_icon_item);
 
+            mClient = client;
             btnEditar = itemView.findViewById(R.id.imgBtnItemProduct_edit);
             btnExcluir = itemView.findViewById(R.id.imgBtnItemProduct_delete);
 
             swipeRevealLayout = itemView.findViewById(R.id.swipeLayout);
-//            txtEdit = itemView.findViewById(R.id.txtEdit);
-//            txtDel = itemView.findViewById(R.id.txtDelete);
-
         }
 
         public void bind(Product product){
@@ -116,7 +119,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                 String link = "http://tecpaper.tk/" + product.getImage();
                 Picasso.get().load(link).into(img);
             }
-
 
 //            // ACTIONS
             btnEditar.setOnClickListener(v -> {
@@ -136,7 +138,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             });
 
             btnExcluir.setOnClickListener(v -> {
+                final ProgressDialog dialog = new ProgressDialog(mContext);
+                dialog.setMessage("Deletando produto...");
+                dialog.setIndeterminate(false);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
+                dialog.show();
 
+                mClient.deleteProduct(product.getId(), dialog);
             });
         }
     }

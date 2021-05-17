@@ -3,23 +3,26 @@ package com.tectoy.tecpaperinsert.api;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.loopj.android.http.*;
+import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.adapter.ProductAdapter;
+import com.tectoy.tecpaperinsert.fragment.NewProductFragment;
+import com.tectoy.tecpaperinsert.fragment.ProductFragment;
 import com.tectoy.tecpaperinsert.sec.Security;
 import com.tectoy.tecpaperinsert.utils.QueryUtils;
 
 import org.json.JSONException;
 import org.json.*;
-
-import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -36,7 +39,6 @@ public class TecpaperRestClient {
     private static final AsyncHttpClient client = new AsyncHttpClient();
     private final Context mContext;
     private final Activity mActivity;
-    private ArrayList arrProducts;
 
 
     // CONSTRUCTOR
@@ -68,7 +70,7 @@ public class TecpaperRestClient {
 
 
     // PUBLIC METHODS
-    public void getProductsToRecyclerView(RecyclerView recyclerProducts, ProgressBar progressBar) {
+    public void getProducts(RecyclerView recyclerProducts, ProgressBar progressBar) {
 
         recyclerProducts.setAdapter(null);
 
@@ -86,7 +88,6 @@ public class TecpaperRestClient {
             }
         });
     }
-
 
     public void postProduct(ProgressDialog dialog, RequestParams params){
 
@@ -112,7 +113,7 @@ public class TecpaperRestClient {
 
     }
 
-    public void deleteProduct(RecyclerView recyclerProducts, long id, ProgressBar progressBar){
+    public void deleteProduct(long id, ProgressDialog dialog){
 
         String url = "?id=" + id + "&pass=" + Security.ADMPASS;
         TecpaperRestClient.delete(url, null, new JsonHttpResponseHandler(){
@@ -120,7 +121,40 @@ public class TecpaperRestClient {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                getProductsToRecyclerView(recyclerProducts, progressBar);
+                dialog.dismiss();
+
+                ProductFragment productFragment = new ProductFragment();
+                FragmentManager fm = ((FragmentActivity) mActivity).getSupportFragmentManager();
+                fm.beginTransaction()
+                        .setCustomAnimations(
+                                R.anim.right_to_left, R.anim.exit_rigth_to_left,
+                                R.anim.left_to_right, R.anim.exit_left_to_rigth)
+                        .addToBackStack("Home")
+                        .replace(R.id.fragmentContainer, productFragment, "Product")
+                        .commit();
+
+            }
+        });
+    }
+
+    public void updateProduct(ProgressDialog dialog, RequestParams params) {
+        TecpaperRestClient.post("", params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                dialog.dismiss();
+
+                try{
+                    String text = response.getString("result");
+
+                    Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
+
+                    if (text.equals("REGISTRO ATUALIZADO")){
+                        mActivity.onBackPressed();
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+
 
             }
         });

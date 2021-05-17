@@ -27,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -35,6 +36,7 @@ import com.squareup.picasso.Picasso;
 import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
 import com.tectoy.tecpaperinsert.model.Product;
+import com.tectoy.tecpaperinsert.utils.Constants;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
@@ -48,6 +50,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -56,9 +59,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.loopj.android.http.*;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.CONTEXT_INCLUDE_CODE;
 
 /**
  * @company TECTOY
@@ -122,6 +127,17 @@ public class NewProductFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        if (requestCode == Constants.REQUEST_READ_STORAGE || requestCode == Constants.REQUEST_WRITE_STORAGE){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                fileImage = getImage();
+            }else{
+                // usuario negou o acesso
+            }
+        }
+    }
+
     private File criarArquivo(Uri resultUri) {
         return new File(getRealPathFromURI(resultUri));
     }
@@ -150,56 +166,43 @@ public class NewProductFragment extends Fragment {
     }
 
     private void sendData() {
-        if(!editCode.getText().toString().equals("")){
-            String id = editCode.getText().toString();
-            if(!editName.getText().toString().equals("")){
-                String name = editName.getText().toString();
-                if(!editDesc.getText().toString().equals("")){
+            if(checkFields()){
+                try {
+                    String id = editCode.getText().toString();
+                    String name = editName.getText().toString();
                     String desc = editDesc.getText().toString();
-                    if(!editPrice.getText().toString().equals("")){
-                        String price = editPrice.getText().toString().replace(",", ".");
-                        if (fileImage != null){
-                            try {
-                                TecpaperRestClient client = new TecpaperRestClient(getContext(), getActivity());
-                                RequestParams params = new RequestParams();
-                                params.put("id", id);
-                                params.put("name", name);
-                                params.put("description", desc);
-                                params.put("price", Double.valueOf(price));
-                                params.put("image", new FileInputStream(fileImage), fileImage.getName());
+                    String price = editPrice.getText().toString().replace(",", ".");
 
-                                final ProgressDialog dialog = new ProgressDialog(getContext());
-                                dialog.setMessage((product != null) ? "Atualizando produto..." : "Cadastrando produto...");
-                                dialog.setIndeterminate(false);
-                                dialog.setCanceledOnTouchOutside(true);
-                                dialog.setCancelable(true);
-                                dialog.show();
-
-                                client.postProduct(dialog, params);
-
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }else{
-                            // ERRO NA IMAGEM
-                            imgNewProduct.setBorderColor(ContextCompat.getColor(getContext(), R.color.red));
-                        }
-                    }else{
-                        // ERRO NO EDIT PRICE
-                        editPrice.setError("Dados inválidos");
+                    TecpaperRestClient client = new TecpaperRestClient(getContext(), getActivity());
+                    RequestParams params = new RequestParams();
+                    params.put("id", id);
+                    params.put("name", name);
+                    params.put("description", desc);
+                    if(product != null){
+                        params.put("update", "true");
                     }
-                }else{
-                    // ERRO NO EDIT DESC
-                    editDesc.setError("Dados inválidos");
+                    params.put("price", Double.valueOf(price));
+                    params.put("image", new FileInputStream(fileImage), fileImage.getName());
+
+                    final ProgressDialog dialog = new ProgressDialog(getContext());
+                    dialog.setMessage((product != null) ? "Atualizando produto..." : "Cadastrando produto...");
+                    dialog.setIndeterminate(false);
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.setCancelable(true);
+                    dialog.show();
+
+                    if (product != null) {
+                        client.updateProduct(dialog, params);
+                    } else {
+                        client.postProduct(dialog, params);
+                    }
+
+                    deleteImageOfDevice(fileImage);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
-            }else{
-                // ERRO NO EDIT NAME
-                editName.setError("Dados inválidos");
             }
-        }else{
-            // ERRO NO EDIT CODE
-            editCode.setError("É preciso escanear um produto");
-        }
     }
 
     private void initViews() {
@@ -233,8 +236,13 @@ public class NewProductFragment extends Fragment {
                 .into(imgNewProduct, new Callback() {
                     @Override
                     public void onSuccess() {
-                        fileImage = getImage();
-                        String name = fileImage.getName();
+                        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                            ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.REQUEST_WRITE_STORAGE);
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.REQUEST_READ_STORAGE);
+                        }else{
+                            fileImage = getImage();
+                        }
                     }
 
                     @Override
@@ -276,10 +284,59 @@ public class NewProductFragment extends Fragment {
             out.flush();
             out.close();
        }catch (Exception e){
-
+        e.printStackTrace();
        }
 
        return file;
+
+    }
+
+    private boolean checkFields(){
+        if(!editCode.getText().toString().equals("")){
+            if(!editName.getText().toString().equals("")){
+                if(!editDesc.getText().toString().equals("")){
+                    if(!editPrice.getText().toString().equals("")){
+                        if (fileImage != null){
+                            return true;
+                        }else{
+                            // ERRO NA IMAGEM
+                            imgNewProduct.setBorderColor(ContextCompat.getColor(getContext(), R.color.red));
+                        }
+                    }else{
+                        // ERRO NO EDIT PRICE
+                        editPrice.setError("Dados inválidos");
+                    }
+                }else{
+                    // ERRO NO EDIT DESC
+                    editDesc.setError("Dados inválidos");
+                }
+            }else{
+                // ERRO NO EDIT NAME
+                editName.setError("Dados inválidos");
+            }
+        }else{
+            // ERRO NO EDIT CODE
+            editCode.setError("É preciso escanear um produto");
+        }
+
+        return false;
+    }
+
+    private void deleteImageOfDevice(File fileImage){
+        if (fileImage.exists()){
+            fileImage.delete();
+            if(fileImage.exists()){
+                try{
+                    fileImage.getCanonicalFile().delete();
+                    if(fileImage.exists()){
+                        getContext().deleteFile(fileImage.getName());
+                    }
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
 
     }
 

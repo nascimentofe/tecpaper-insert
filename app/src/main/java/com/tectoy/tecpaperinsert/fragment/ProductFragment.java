@@ -1,16 +1,13 @@
 package com.tectoy.tecpaperinsert.fragment;
 
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,8 +23,6 @@ import com.tectoy.tecpaperinsert.R;
 import com.tectoy.tecpaperinsert.activity.NewProductActivity;
 import com.tectoy.tecpaperinsert.api.TecpaperRestClient;
 import com.tectoy.tecpaperinsert.model.Product;
-
-import java.util.List;
 
 /**
  * @company TECTOY
@@ -63,6 +58,7 @@ public class ProductFragment extends Fragment {
 
     @Override
     public void onResume() {
+        hideStatusBarAndNavigationBar();
         startRecyclerView();
         super.onResume();
     }
@@ -81,13 +77,9 @@ public class ProductFragment extends Fragment {
         });
     }
 
-    private void excluirItem(Product product) {
-        client.deleteProduct(recyclerProducts, product.getId(), progressBar);
-    }
-
     private void startRecyclerView() {
         client = new TecpaperRestClient(getContext(), getActivity());
-        client.getProductsToRecyclerView(recyclerProducts, progressBar);
+        client.getProducts(recyclerProducts, progressBar);
     }
 
     private void hideStatusBarAndNavigationBar() {
@@ -98,9 +90,6 @@ public class ProductFragment extends Fragment {
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION // hide nav bar
 //                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
     }
 
 }
