@@ -8,5 +8,6 @@ package com.tectoy.tecpaperinsert.utils;
  */
 
 public class Constants {
-    public static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int REQUEST_WRITE_STORAGE = 2;
+    public static final int REQUEST_READ_STORAGE = 3;
 }
